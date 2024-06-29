@@ -64,40 +64,44 @@ Answer:
 
 ### Part 2. Preparing the Data
 
-**Step 1: Declare that you will use the *tidyverse* and *lfe* package.
-(4 points)**
+Step 1: Declare that you will use the **tidyverse** and **lfe** package.
+**(4 points)**
 
-**Step 2: Upload *data.csv* into the Environment. (2 points)**
+Step 2: Upload **data.csv** into the Environment. **(2 points)**
 
-**Step 3: Create a new variable called *post* that is equal to 0.5 in
+Note: This is the same dataframe that Deschenes et al. (2017) used to
+run their regressions. It is download from the [replication package
+released by the
+authors](https://www.openicpsr.org/openicpsr/project/112938/version/V1/view).
+
+Step 3: Create a new variable called **post** that is equal to 0.5 in
 the year 2003 and equal to 1 in the years 2004 through 2007. Otherwise,
-*post* is equal to 0. (6 points)**
+**post** is equal to 0. (6 points)
 
-**Step 4: The variable *fips* are county indicators. The script below
+Step 4: The variable **fips** are county indicators. The script below
 creates a unique identifier for each county-season which will be used to
-represent** $\nu_{cs}$ **in the regressions.**
+represent $\nu_{cs}$ in the regressions.
 
-**You need to create another unique identifier for each season-year
-which will be used to represent** $\eta_{ct}$ **in the regressions. Name
-the new variable *smmXy*. (2 points)**
+You need to create another unique identifier for each season-year which
+will be used to represent $\eta_{ct}$ in the regressions. Name the new
+variable **smmXy**. (2 points)
 
 ``` r
 df3<-df2 %>%
   mutate(smmXc = smm*as.numeric(fips)) 
 ```
 
-**Step 5: The script below creates a unique identifier for each state
-and year. Use the same method to create a unique identifier for each
-county-year. Name the new variable *cXy*. (2 points)**
+Step 5: The script below creates a unique identifier for each state and
+year. Use the same method to create a unique identifier for each
+county-year. Name the new variable **cXy**. (2 points)
 
 ``` r
 df4<-df3 %>%
   mutate(stXy = paste(state, "-", as.character(year)))
 ```
 
-**Step 6: Create a new variable that represents the variable**
-$NBPOperating_{cst}$**. Name the new variable *NBPOperating*. (3
-points)**
+Step 6: Create a new variable that represents the variable
+$NBPOperating_{cst}$. Name the new variable **NBPOperating**. (3 points)
 
 Hint: We discussed this in Part 1 Question 1.
 
@@ -133,8 +137,9 @@ summary(m2<-felm(nox_emit ~ NBPOperating +
                    dptp_xtile_18 + dptp_xtile_19 + dptp_xtile_20 + tmean_xtile_1 +
                    tmean_xtile_2 + tmean_xtile_4 + tmean_xtile_5 + tmean_xtile_6 +
                    tmean_xtile_7 + tmean_xtile_8 + tmean_xtile_9 + tmean_xtile_10 +
-                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + tmean_xtile_14 +
-                   tmean_xtile_15 + tmean_xtile_16 + tmean_xtile_17 + tmean_xtile_18 +
+                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + 
+                   tmean_xtile_14 + tmean_xtile_15 + tmean_xtile_16 + 
+                   tmean_xtile_17 + tmean_xtile_18 +
                    tmean_xtile_19 + tmean_xtile_20 + mean_prcp, 
                  data=df5))
 ```
@@ -175,9 +180,9 @@ Answer:
 
 ### Column 2
 
-**The following regression will replicate the results in Table 2 Panel A
+The following regression will replicate the results in Table 2 Panel A
 Column 1. Modify the script below to replicate the results in Column 2.
-(3 points)**
+**(3 points)**
 
 ``` r
 summary(c2<-felm(nox_emit ~ NBPOperating + 
@@ -187,15 +192,15 @@ summary(c2<-felm(nox_emit ~ NBPOperating +
 
 ### Column 3
 
-**The following regression will replicate the results in Table 2 Panel A
+The following regression will replicate the results in Table 2 Panel A
 Column 5. Modify the script below to replicate the results in column 3.
-(3 points)**
+**(3 points)**
 
 ``` r
 df2001<-df5 %>%
   filter(year>=2001)
 
-summary(c5<-felm(nox_emit ~ NBPOperating + 
+summary(c3<-felm(nox_emit ~ NBPOperating + 
                    dptp_xtile_1 + dptp_xtile_2 + dptp_xtile_4 + dptp_xtile_5 +
                    dptp_xtile_6 + dptp_xtile_7 + dptp_xtile_8 + dptp_xtile_9 +
                    dptp_xtile_10 + dptp_xtile_11 + dptp_xtile_12 + dptp_xtile_13 +
@@ -203,8 +208,9 @@ summary(c5<-felm(nox_emit ~ NBPOperating +
                    dptp_xtile_18 + dptp_xtile_19 + dptp_xtile_20 + tmean_xtile_1 +
                    tmean_xtile_2 + tmean_xtile_4 + tmean_xtile_5 + tmean_xtile_6 +
                    tmean_xtile_7 + tmean_xtile_8 + tmean_xtile_9 + tmean_xtile_10 +
-                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + tmean_xtile_14 +
-                   tmean_xtile_15 + tmean_xtile_16 + tmean_xtile_17 + tmean_xtile_18 +
+                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + 
+                   tmean_xtile_14 + tmean_xtile_15 + tmean_xtile_16 + 
+                   tmean_xtile_17 + tmean_xtile_18 +
                    tmean_xtile_19 + tmean_xtile_20 + mean_prcp | 
                    smmXc + smmXy + cXy, 
                  weights = df2001$pop_all,
@@ -213,14 +219,15 @@ summary(c5<-felm(nox_emit ~ NBPOperating +
 
 ### Column 4
 
-**The following regression will replicate the results in Table 2 Panel A
+The following regression will replicate the results in Table 2 Panel A
 Column 5. Modify the script below to replicate the results in column 4.
-(3 points)**
+**(3 points)**
 
 ``` r
 df2001<-df5 %>%
   filter(year>=2001)
-summary(c5<-felm(nox_emit ~ NBPOperating + 
+
+summary(c4<-felm(nox_emit ~ NBPOperating + 
                    dptp_xtile_1 + dptp_xtile_2 + dptp_xtile_4 + dptp_xtile_5 +
                    dptp_xtile_6 + dptp_xtile_7 + dptp_xtile_8 + dptp_xtile_9 +
                    dptp_xtile_10 + dptp_xtile_11 + dptp_xtile_12 + dptp_xtile_13 +
@@ -228,8 +235,9 @@ summary(c5<-felm(nox_emit ~ NBPOperating +
                    dptp_xtile_18 + dptp_xtile_19 + dptp_xtile_20 + tmean_xtile_1 +
                    tmean_xtile_2 + tmean_xtile_4 + tmean_xtile_5 + tmean_xtile_6 +
                    tmean_xtile_7 + tmean_xtile_8 + tmean_xtile_9 + tmean_xtile_10 +
-                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + tmean_xtile_14 +
-                   tmean_xtile_15 + tmean_xtile_16 + tmean_xtile_17 + tmean_xtile_18 +
+                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + 
+                   tmean_xtile_14 + tmean_xtile_15 + tmean_xtile_16 + 
+                   tmean_xtile_17 + tmean_xtile_18 +
                    tmean_xtile_19 + tmean_xtile_20 + mean_prcp | 
                    smmXc + smmXy + cXy, 
                  weights = df2001$pop_all,
@@ -243,6 +251,7 @@ You just have to run the script below.
 ``` r
 df2001<-df5 %>%
   filter(year>=2001)
+
 summary(c5<-felm(nox_emit ~ NBPOperating + 
                    dptp_xtile_1 + dptp_xtile_2 + dptp_xtile_4 + dptp_xtile_5 +
                    dptp_xtile_6 + dptp_xtile_7 + dptp_xtile_8 + dptp_xtile_9 +
@@ -251,12 +260,20 @@ summary(c5<-felm(nox_emit ~ NBPOperating +
                    dptp_xtile_18 + dptp_xtile_19 + dptp_xtile_20 + tmean_xtile_1 +
                    tmean_xtile_2 + tmean_xtile_4 + tmean_xtile_5 + tmean_xtile_6 +
                    tmean_xtile_7 + tmean_xtile_8 + tmean_xtile_9 + tmean_xtile_10 +
-                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + tmean_xtile_14 +
-                   tmean_xtile_15 + tmean_xtile_16 + tmean_xtile_17 + tmean_xtile_18 +
+                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 + 
+                   tmean_xtile_14 + tmean_xtile_15 + tmean_xtile_16 + 
+                   tmean_xtile_17 + tmean_xtile_18 +
                    tmean_xtile_19 + tmean_xtile_20 + mean_prcp | 
                    smmXc + smmXy + cXy, 
                  weights = df2001$pop_all,
                  data=df2001))
+
+res_tab<-as.data.frame(cbind(C1 = coef(c1)[[1]], 
+                             C2 = coef(c2)[[1]], 
+                             C3 = coef(c3)[[1]], 
+                             C4 = coef(c4)[[1]], 
+                             C5 = coef(c5)[[1]]))
+kable(res_tab, digits=2)
 ```
 
 **Question 8: Based on the regression results in Column 1 through 5, the
@@ -270,5 +287,5 @@ Budget Program, our results correspond to a total decrease of between
 NOx per summer. (4 points)**
 
 You have reached the end of the assignment. Render the Quarto document
-and push the completed assignment back into the GitHub repository. (2
-points)
+and push the completed assignment back into the GitHub repository. **(2
+points)**
