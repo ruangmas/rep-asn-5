@@ -11,7 +11,9 @@ In this assignment, you will learn to understand, run, and interpret regression 
 
 In the first part of this assignment, you will need to read **Section IV. Econometric Model** (pages 2969 - 2970) in the paper by Deschênes et al. (2017). You can find a copy of the paper in [here](https://pubs.aeaweb.org/doi/pdfplus/10.1257/aer.20131002). Afterward, you will need to answer the questions below.
 
-We will focus on the regression equation $Y_{cst} = \gamma_1 1(NBP Operating)_{cst} + W'_{cst}\beta+\mu_{ct}+\eta_{st}+\nu_{cs}+\epsilon_{cst}$
+We will focus on the regression equation
+
+$Y_{cst} = \gamma_1 1(NBP Operating)_{cst} + W'_{cst}\beta+\mu_{ct}+\eta_{st}+\nu_{cs}+\epsilon_{cst}$
 
 where $cst$ represents the unit of each observation in the data.
 

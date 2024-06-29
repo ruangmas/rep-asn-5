@@ -15,6 +15,7 @@ al. (2017). You can find a copy of the paper in
 Afterward, you will need to answer the questions below.
 
 We will focus on the regression equation
+
 $Y_{cst} = \gamma_1 1(NBP Operating)_{cst} + W'_{cst}\beta+\mu_{ct}+\eta_{st}+\nu_{cs}+\epsilon_{cst}$
 
 where $cst$ represents the unit of each observation in the data.
