@@ -18,7 +18,7 @@ where $cst$ represents the unit of each observation in the data.
 
 #### **Question 1: What is the unit of each observation in the data? (3 points)**
 
-#### Answer:
+#### Answer: County, Season, Year
 
 The variable $NBPOperating_{cst}$ is a product of three dummy variables, $post_t \times nbp_c \times smm_s$.
 
@@ -28,31 +28,33 @@ $smm_s$ is a dummy variable for the summer season.
 
 #### **Question 2: What does the variable *post* represent? Why is *post* equal to 0.5 in the year 2003? (2 points)**
 
-#### Answer:
+#### Answer: Post represents the implementation time of the NOx Budget Program. Because it started partway in 2003, Post is equal to 0.5 in that year.
 
 #### **Question 3: What does the parameter of interest** $\gamma_1$ **represent? (1 point)**
 
-#### Answer:
+#### Answer: It captures the impact of implementing the NOx Budget Program in regulated counties, relative to unregulated counties, in years when it operated relative to before, and in the summer relative to winter.
 
 #### **Question 4: The variable** $\mu_{ct}$ **represents county-year fixed effects. Why do we have to include this factor in our analysis? (1 point)**
 
-#### Answer:
+#### Answer: We need to take into account factors specific to a county in a year, such as local economic activity or healthcare provider quality.
 
 #### **Question 5: The variable** $\eta_{st}$ **represents season-year fixed effects. Why do we have to include this factor in our analysis? (1 point)**
 
-#### Answer:
+#### Answer: We need to take into account factors common to all areas in a season and year such as the development of a new drug that is sold in all areas.
 
 #### **Question 6: The variable** $\nu_{cs}$ **represents county-season fixed effects. Why do we have to include this factor in our analysis? (1 point)**
 
-#### Answer:
+#### Answer: To take into account other factors that can affect each county in the summer. For example, some counties have higher energy use from air conditioning in the summer.
 
 ## Part 2. Preparing the Data
 
 Step 1: Declare that you will use the **tidyverse** and **lfe** package. **(4 points)**
 
 ```{r}
-
-
+#| message: false
+#| warning: false
+library("tidyverse")
+library("lfe")
 ```
 
 Step 2: Upload **data.csv** into the Environment. **(2 points)**
@@ -60,13 +62,15 @@ Step 2: Upload **data.csv** into the Environment. **(2 points)**
 Note: This is the same dataframe that Deschenes et al. (2017) used to run their regressions. It is download from the [replication package released by the authors](https://www.openicpsr.org/openicpsr/project/112938/version/V1/view).
 
 ```{r}
-
+df<-read.csv("data.csv")
 ```
 
 Step 3: Create a new variable called **post** that is equal to 0.5 in the year 2003 and equal to 1 in the years 2004 through 2007. Otherwise, **post** is equal to 0. **(6 points)**
 
 ```{r}
-
+df2<-df %>%
+  mutate(post=ifelse(year>=2004,1,0)) %>%
+  mutate(post=ifelse(year==2003,0.5,post))
 ```
 
 Step 4: The variable **fips** are county indicators. The script below creates a unique identifier for each county-season which will be used to represent $\nu_{cs}$ in the regressions.
@@ -74,17 +78,17 @@ Step 4: The variable **fips** are county indicators. The script below creates a 
 You need to create another unique identifier for each season-year which will be used to represent $\eta_{ct}$ in the regressions. Name the new variable **smmXy**. **(2 points)**
 
 ```{r}
-#| eval: false
 df3<-df2 %>%
-  mutate(smmXc = smm*as.numeric(fips)) 
+  mutate(smmXc = smm*as.numeric(fips)) %>%
+  mutate(smmXy = smm*year)
 ```
 
 Step 5: The script below creates a unique identifier for each state and year. Use the same method to create a unique identifier for each county-year. Name the new variable **cXy**. **(2 points)**
 
 ```{r}
-#| eval: false
 df4<-df3 %>%
-  mutate(stXy = paste(state, "-", as.character(year)))
+  mutate(stXy = paste(state, "-", as.character(year))) %>%
+  mutate(cXy = paste(fips, "-", as.character(year))) 
 ```
 
 Step 6: Create a new variable that represents the variable $NBPOperating_{cst}$. Name the new variable **NBPOperating**. **(3 points)**
@@ -92,7 +96,8 @@ Step 6: Create a new variable that represents the variable $NBPOperating_{cst}$.
 Hint: We discussed this in Part 1 Question 1.
 
 ```{r}
-
+df5<-df4 %>%
+  mutate(NBPOperating=post*smm*nbp) 
 ```
 
 ## Part 3: Running Regressions
@@ -100,22 +105,20 @@ Hint: We discussed this in Part 1 Question 1.
 Answer Questions 1 to 3 based on the regression results below.
 
 ```{r}
-#| eval: false
 summary(m1<-lm(nox_emit ~ NBPOperating, data=df5))
 ```
 
-#### **Question 1: According to the regression, the NOx Budget Program was able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per county-season. (1 point)**
+#### **Question 1: According to the regression, the NOx Budget Program was able to reduce NOx emissions by 0.26 thousand tons per county-season. (1 point)**
 
-#### **Question 2: According to the regression, the value of** $\gamma_1$ **is \_\_\_\_\_\_. (1 point)**
+#### **Question 2: According to the regression, the value of** $\gamma_1$ **is -0.26. (1 point)**
 
 #### **Question 3: Can the regression produce an accurate estimate of the NBP's impact? If not, why? (2 points)**
 
-#### Answer:
+#### Answer: No, because there are other factors affecting NOx emissions that we have not taken into account.
 
 The script below adds weather controls to the regression. Answer Questions 4 to 6 based on the regression results below.
 
 ```{r}
-#| eval: false
 summary(m2<-felm(nox_emit ~ NBPOperating + 
                    dptp_xtile_1 + dptp_xtile_2 + dptp_xtile_4 + dptp_xtile_5 +
                    dptp_xtile_6 + dptp_xtile_7 + dptp_xtile_8 + dptp_xtile_9 +
@@ -132,9 +135,9 @@ summary(m2<-felm(nox_emit ~ NBPOperating +
 
 ```
 
-#### **Question 4: According to the regression, the NOx Budget Program was able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per county-season. (1 point)**
+#### **Question 4: According to the regression, the NOx Budget Program was able to reduce NOx emissions by 0.39\_ thousand tons per county-season. (1 point)**
 
-#### **Question 5: According to the regression, the value of** $\gamma_1$ **is \_\_\_\_\_\_. (1 point)**
+#### **Question 5: According to the regression, the value of** $\gamma_1$ **is -0.39. (1 point)**
 
 The part below replicates regression results in the paper by Deschênes et al. (2017).
 
@@ -142,7 +145,7 @@ The part below replicates regression results in the paper by Deschênes et al. (
 
 ### Column 1
 
-The following regression will replicate the results in Table 2 Panel A Column 1. Because multiple fixed effects will be included, we will use the function *felm* instead of *lm*. Answer Questions 7 and 8 based on the regression results below.
+The following regression will replicate the results in Table 2 Panel A Column 1. Because multiple fixed effects will be included, we will use the function *felm* instead of *lm*. Answer Questions 6 and 7 based on the regression results below.
 
 ```{r}
 #| eval: false
@@ -151,19 +154,29 @@ summary(c1<-felm(nox_emit ~ NBPOperating |
                  data=df5))
 ```
 
-#### **Question 6: According to the regression, the NOx Budget Program was able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per county-season. (1 point)**
+#### **Question 6: According to the regression, the NOx Budget Program was able to reduce NOx emissions by 0.36 thousand tons per county-season. (1 point)**
 
 #### **Question 7: What fixed effects were included in the regression? (3 point)**
 
-#### Answer:
+#### Answer: season-county, season-year, state-year
 
 ### Column 2
 
 The following regression will replicate the results in Table 2 Panel A Column 1. Modify the script below to replicate the results in Column 2. **(3 points)**
 
 ```{r}
-#| eval: false
 summary(c2<-felm(nox_emit ~ NBPOperating + 
+                   dptp_xtile_1 + dptp_xtile_2 + dptp_xtile_4 + dptp_xtile_5 +
+                   dptp_xtile_6 + dptp_xtile_7 + dptp_xtile_8 + dptp_xtile_9 +
+                   dptp_xtile_10 + dptp_xtile_11 + dptp_xtile_12 + dptp_xtile_13 +
+                   dptp_xtile_14 + dptp_xtile_15 + dptp_xtile_16 + dptp_xtile_17 +
+                   dptp_xtile_18 + dptp_xtile_19 + dptp_xtile_20 + tmean_xtile_1 +
+                   tmean_xtile_2 + tmean_xtile_4 + tmean_xtile_5 + tmean_xtile_6 +
+                   tmean_xtile_7 + tmean_xtile_8 + tmean_xtile_9 + tmean_xtile_10 +
+                   tmean_xtile_11 + tmean_xtile_12 + tmean_xtile_13 +
+                   tmean_xtile_14 + tmean_xtile_15 + tmean_xtile_16 +
+                   tmean_xtile_17 + tmean_xtile_18 +
+                   tmean_xtile_19 + tmean_xtile_20 + mean_prcp | 
                    smmXc + smmXy + stXy , 
                  data=df5))
 ```
@@ -173,9 +186,6 @@ summary(c2<-felm(nox_emit ~ NBPOperating +
 The following regression will replicate the results in Table 2 Panel A Column 5. Modify the script below to replicate the results in column 3. **(3 points)**
 
 ```{r}
-#| eval: false
-df2001<-df5 %>%
-  filter(year>=2001)
 
 summary(c3<-felm(nox_emit ~ NBPOperating + 
                    dptp_xtile_1 + dptp_xtile_2 + dptp_xtile_4 + dptp_xtile_5 +
@@ -190,8 +200,7 @@ summary(c3<-felm(nox_emit ~ NBPOperating +
                    tmean_xtile_17 + tmean_xtile_18 +
                    tmean_xtile_19 + tmean_xtile_20 + mean_prcp | 
                    smmXc + smmXy + cXy, 
-                 weights = df2001$pop_all,
-                 data=df2001))
+                 data=df5))
 ```
 
 ### Column 4
@@ -216,7 +225,6 @@ summary(c4<-felm(nox_emit ~ NBPOperating +
                    tmean_xtile_17 + tmean_xtile_18 +
                    tmean_xtile_19 + tmean_xtile_20 + mean_prcp | 
                    smmXc + smmXy + cXy, 
-                 weights = df2001$pop_all,
                  data=df2001))
 ```
 
@@ -250,13 +258,14 @@ res_tab<-as.data.frame(cbind(C1 = coef(c1)[[1]],
                              C3 = coef(c3)[[1]], 
                              C4 = coef(c4)[[1]], 
                              C5 = coef(c5)[[1]]))
+library("knitr")
 kable(res_tab, digits=2)
 ```
 
-#### **Question 8: Based on the regression results in Column 1 through 5, the NOx Budget Program decreased NOx emissions in the average county by \_\_\_\_\_\_\_\_(minimum value) to \_\_\_\_\_\_(maximum value) tons of NOx per summer. (2 points)**
+#### **Question 8: Based on the regression results in Column 1 through 5, the NOx Budget Program decreased NOx emissions in the average county by 330 (minimum value) to 440 (maximum value) tons of NOx per summer. (2 points)**
 
-#### **Question 9: Because there are 1185 counties regulated by the NOx Budget Program, our results correspond to a total decrease of between \_\_\_\_\_\_\_\_(minimum value) to \_\_\_\_\_\_(maximum value) tons of NOx per summer. (4 points)**
+#### **Question 9: Because there are 1185 counties regulated by the NOx Budget Program, our results correspond to a total decrease of between 391,050 (minimum value) to 521,400 (maximum value) tons of NOx per summer. (4 points)**
 
-Remove all lines of script with #\| eval: false which prevents the line from running when rendered. Afterward, click Render to generate an html file of this document. Click Render to generate an html file of this document.
+Remove all lines of script with **#\| eval: false** which prevents the line from running when rendered. Afterward, click Render to generate an html file of this document. Click **Render** to generate an html file of this document.
 
 You have reached the end of the assignment. Render the Quarto document and push the completed assignment back into the GitHub repository. **(2 points)**

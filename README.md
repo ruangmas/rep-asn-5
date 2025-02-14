@@ -1,12 +1,11 @@
 # Paper Replication Assignment 5: Make Table 2A
-FIRE Sustainability Analytics
 
 In this assignment, you will learn to understand, run, and interpret
 regression results in Table 2 Panel A in *Defensive Investments and the
 Demand for Air Quality: Evidence from the NOx Budget Program* by
 Deschênes et al. (2017).
 
-### **Part 1. Understanding the Methodology**
+## **Part 1. Understanding the Methodology**
 
 In the first part of this assignment, you will need to read **Section
 IV. Econometric Model** (pages 2969 - 2970) in the paper by Deschênes et
@@ -16,14 +15,13 @@ Afterward, you will need to answer the questions below.
 
 We will focus on the regression equation
 
-$Y_{cst} = \gamma_1 1(NBP Operating)_{cst} + W'_{cst}\beta+\mu_{ct}+\eta_{st}+\nu_{cs}+\epsilon_{cst}$
+<img src="equation.png" data-fig-align="center" width="500" />
 
 where $cst$ represents the unit of each observation in the data.
 
-**Question 1: What is the unit of each observation in the data? (3
-points)**
+#### **Question 1: What is the unit of each observation in the data? (3 points)**
 
-Answer:
+#### Answer:
 
 The variable $NBPOperating_{cst}$ is a product of three dummy variables,
 $post_t \times nbp_c \times smm_s$.
@@ -32,35 +30,27 @@ $nbp_c$ is a dummy variable for NBP participating counties.
 
 $smm_s$ is a dummy variable for the summer season.
 
-**Question 2: What does the variable *post* represent? Why is *post*
-equal to 0.5 in the year 2003? (2 points)**
+#### **Question 2: What does the variable *post* represent? Why is *post* equal to 0.5 in the year 2003? (2 points)**
 
-Answer:
+#### Answer:
 
-**Question 3: What does the parameter of interest** $\gamma_1$
-**represent? (1 point)**
+#### **Question 3: What does the parameter of interest** $\gamma_1$ **represent? (1 point)**
 
-Answer:
+#### Answer:
 
-**Question 4: The variable** $\mu_{ct}$ **represents county-year fixed
-effects. Why do we have to include this factor in our analysis? (1
-point)**
+#### **Question 4: The variable** $\mu_{ct}$ **represents county-year fixed effects. Why do we have to include this factor in our analysis? (1 point)**
 
-Answer:
+#### Answer:
 
-**Question 5: The variable** $\eta_{st}$ **represents season-year fixed
-effects. Why do we have to include this factor in our analysis? (1
-point)**
+#### **Question 5: The variable** $\eta_{st}$ **represents season-year fixed effects. Why do we have to include this factor in our analysis? (1 point)**
 
-Answer:
+#### Answer:
 
-**Question 6: The variable** $\nu_{cs}$ **represents county-season fixed
-effects. Why do we have to include this factor in our analysis? (1
-point)**
+#### **Question 6: The variable** $\nu_{cs}$ **represents county-season fixed effects. Why do we have to include this factor in our analysis? (1 point)**
 
-Answer:
+#### Answer:
 
-### Part 2. Preparing the Data
+## Part 2. Preparing the Data
 
 Step 1: Declare that you will use the **tidyverse** and **lfe** package.
 **(4 points)**
@@ -74,7 +64,7 @@ authors](https://www.openicpsr.org/openicpsr/project/112938/version/V1/view).
 
 Step 3: Create a new variable called **post** that is equal to 0.5 in
 the year 2003 and equal to 1 in the years 2004 through 2007. Otherwise,
-**post** is equal to 0. (6 points)
+**post** is equal to 0. **(6 points)**
 
 Step 4: The variable **fips** are county indicators. The script below
 creates a unique identifier for each county-season which will be used to
@@ -82,7 +72,7 @@ represent $\nu_{cs}$ in the regressions.
 
 You need to create another unique identifier for each season-year which
 will be used to represent $\eta_{ct}$ in the regressions. Name the new
-variable **smmXy**. (2 points)
+variable **smmXy**. **(2 points)**
 
 ``` r
 df3<-df2 %>%
@@ -91,7 +81,7 @@ df3<-df2 %>%
 
 Step 5: The script below creates a unique identifier for each state and
 year. Use the same method to create a unique identifier for each
-county-year. Name the new variable **cXy**. (2 points)
+county-year. Name the new variable **cXy**. **(2 points)**
 
 ``` r
 df4<-df3 %>%
@@ -99,11 +89,12 @@ df4<-df3 %>%
 ```
 
 Step 6: Create a new variable that represents the variable
-$NBPOperating_{cst}$. Name the new variable **NBPOperating**. (3 points)
+$NBPOperating_{cst}$. Name the new variable **NBPOperating**. **(3
+points)**
 
 Hint: We discussed this in Part 1 Question 1.
 
-### Part 3: Running the Regressions
+## Part 3: Running Regressions
 
 Answer Questions 1 to 3 based on the regression results below.
 
@@ -111,17 +102,13 @@ Answer Questions 1 to 3 based on the regression results below.
 summary(m1<-lm(nox_emit ~ NBPOperating, data=df5))
 ```
 
-**Question 1: According to the regression, the NOx Budget Program was
-able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per
-county-season. (1 point)**
+#### **Question 1: According to the regression, the NOx Budget Program was able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per county-season. (1 point)**
 
-**Question 2: According to the regression, the value of** $\gamma_1$
-**is \_\_\_\_\_\_. (1 point)**
+#### **Question 2: According to the regression, the value of** $\gamma_1$ **is \_\_\_\_\_\_. (1 point)**
 
-**Question 3: Can the regression produce an accurate estimate of the
-NBP’s impact? If not, why? (2 points)**
+#### **Question 3: Can the regression produce an accurate estimate of the NBP’s impact? If not, why? (2 points)**
 
-Answer:
+#### Answer:
 
 The script below adds weather controls to the regression. Answer
 Questions 4 to 6 based on the regression results below.
@@ -142,12 +129,9 @@ summary(m2<-felm(nox_emit ~ NBPOperating +
                  data=df5))
 ```
 
-**Question 4: According to the regression, the NOx Budget Program was
-able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per
-county-season. (1 point)**
+#### **Question 4: According to the regression, the NOx Budget Program was able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per county-season. (1 point)**
 
-**Question 5: According to the regression, the value of** $\gamma_1$
-**is \_\_\_\_\_\_. (1 point)**
+#### **Question 5: According to the regression, the value of** $\gamma_1$ **is \_\_\_\_\_\_. (1 point)**
 
 The part below replicates regression results in the paper by Deschênes
 et al. (2017).
@@ -167,14 +151,11 @@ summary(c1<-felm(nox_emit ~ NBPOperating |
                  data=df5))
 ```
 
-**Question 6: According to the regression, the NOx Budget Program was
-able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per
-county-season. (1 point)**
+#### **Question 6: According to the regression, the NOx Budget Program was able to reduce NOx emissions by \_\_\_\_\_\_ thousand tons per county-season. (1 point)**
 
-**Question 7: What fixed effects were included in the regression? (3
-point)**
+#### **Question 7: What fixed effects were included in the regression? (3 point)**
 
-Answer:
+#### Answer:
 
 ### Column 2
 
@@ -274,15 +255,14 @@ res_tab<-as.data.frame(cbind(C1 = coef(c1)[[1]],
 kable(res_tab, digits=2)
 ```
 
-**Question 8: Based on the regression results in Column 1 through 5, the
-NOx Budget Program decreased NOx emissions in the average county by
-\_\_\_\_\_\_\_\_(minimum value) to \_\_\_\_\_\_(maximum value) tons of
-NOx per summer. (2 points)**
+#### **Question 8: Based on the regression results in Column 1 through 5, the NOx Budget Program decreased NOx emissions in the average county by \_\_\_\_\_\_\_\_(minimum value) to \_\_\_\_\_\_(maximum value) tons of NOx per summer. (2 points)**
 
-**Question 9: Because there are 1185 counties regulated by the NOx
-Budget Program, our results correspond to a total decrease of between
-\_\_\_\_\_\_\_\_(minimum value) to \_\_\_\_\_\_(maximum value) tons of
-NOx per summer. (4 points)**
+#### **Question 9: Because there are 1185 counties regulated by the NOx Budget Program, our results correspond to a total decrease of between \_\_\_\_\_\_\_\_(minimum value) to \_\_\_\_\_\_(maximum value) tons of NOx per summer. (4 points)**
+
+Remove all lines of script with #\| eval: false which prevents the line
+from running when rendered. Afterward, click Render to generate an html
+file of this document. Click Render to generate an html file of this
+document.
 
 You have reached the end of the assignment. Render the Quarto document
 and push the completed assignment back into the GitHub repository. **(2
